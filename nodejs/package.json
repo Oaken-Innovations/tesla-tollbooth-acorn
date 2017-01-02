@@ -1,17 +1,30 @@
 {
   "name": "oaken",
   "version": "1.0.0",
-  "description": "",
+  "description": "Tesla Tollbooth Demo for UAE Govtech Hackathon",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "James Johnson, Hudson Jameson, John Gerryts, Shuang Liang",
   "license": "ISC",
   "dependencies": {
     "fs": "0.0.1-security",
     "ipfs": "^0.20.1",
     "ipfs-api": "^12.0.2",
     "web3": "^0.17.0-beta"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Project-Oaken/tesla-tollbooth-acorns/nodejs"
+  },
+  "keywords": [
+    "IoT",
+    "Blockchain",
+    "Tesla",
+    "HSM",
+    "Ethereum",
+    "IPFS"
+  ]
 }
