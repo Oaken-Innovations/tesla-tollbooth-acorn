@@ -17,7 +17,7 @@ redled.writeSync(1);
 
 //make sure green light is off.
 greenled.writeSync(0);
-console.log('Red On, green off');
+console.log('Gate IS DOWN!');
 
 // import ethereum web3 nodejs library
 var Web3 = require('web3');
@@ -30,18 +30,19 @@ web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
 
 
 // log some web3 object values to make sure we're all connected
-console.log(web3.version.api);
-console.log(web3.isConnected());
+if (web3.isConnected()){
+console.log("Ethereum node successfully connected to version:");
 console.log(web3.version.node);
+}
 // test to see if a local coinbase is running ... we'll need this account to interact with a contract.
 var coinbase = web3.eth.accounts[0];
 
 // if default wallet/account isn't set - this won't have a value.  needed to interact with a contract.
-console.log(coinbase);
+console.log("Using Wallet ID: " + coinbase);
 // let's print the balance of the wallet/account to test coinbase settings
 // no worries if this is 0... don't need money to read events!
 var balance = web3.eth.getBalance(coinbase);
-console.log(balance.toString(10));
+console.log("Balance " + balance.toString(10) + " wei");
 // Set the local node default account in order to interact with the contract 
 // (can't interact with a contract if it doesn't know 'who' it is interacting with)
 web3.eth.defaultAccount = web3.eth.accounts[0];
@@ -60,14 +61,12 @@ var PayTollABI = JSON.parse(PayTollABIString);
 var PayTollContractAddress = '0x16ba5d688f0e88fa36913a5271655c566c0b65fa';
 var payToll = web3.eth.contract(PayTollABI).at(PayTollContractAddress);
 
-
+console.log('\n********* Ready to charge toll! *********');
 
 //Monitor RFID for a scan.
 port.on('data', function (data) {
 
-   //output RFID card ID and capture it.
-  console.log('Data: ' + data);
-  cardscan = data;
+   cardscan = data.trim();
 
   //***logic here to see if card holder will execute payment contract.
   // post RFID card ID to WannaPay? contract.  
@@ -75,12 +74,15 @@ port.on('data', function (data) {
 
   
    
-  console.log('RFID SCANNED: ' + cardscan);
+  console.log('\n\n\n*********'+' RFID SCANNED: ' + cardscan + ' *********');
 
-  console.log('Updating TollBooth Contract with RFID ID');
+
+  console.log('Updating TollBooth Contract with RFID: '+ cardscan);
   tollBooth.set(cardscan, function(error, result){
-        if(!error)
-            console.log(result)
+        if(!error){
+            console.log('With Transaction ID: '+ result);
+            console.log('**********************************************');
+          }
         else
             console.error(error);
 
@@ -95,32 +97,32 @@ port.on('data', function (data) {
     if (!error) {
 
       var contractCardID = result.args.ID.trim();
+      var IPFSLoc = result.args.IPFS.trim();
 
 
       // when Pay event is fired, output the value 'carddata' from the result object and the block number
-      var msg = "\n\n*********";
-      msg += "Paid by: " + result.args.ID;
-      msg += "\nIPFS Loc: http://ipfs.io/ipfs/" + result.args.IPFS;
-      msg += "\n\nblock:" + result.blockNumber;
-      msg += "*********";
-      
+      console.log('\n********* Toll Pay Contract Event Signaled *********');
 
-      console.log(msg);
+      console.log('\n********* Toll Paid by: ' + contractCardID+ ' *********');
+      console.log('IPFS Loc: http://ipfs.io/ipfs/' + IPFSLoc);
+      console.log('**********************************************');
+
 
       //IF the card that the paytoll contract matches with the id of the scanned card, then lift the gate.
 
-      if (contractCardID.toString == cardscan.toString){
-        //Match!  
 
-        console.log("MATCH!");
+      if (contractCardID.toString == cardscan.toString){
+      
+
+        
         //If card passes, blink green light (raise toll gate)
         redled.writeSync(0);  // Turn redLED off.
         greenled.writeSync(1); // Turn greenLED on.
-        console.log('opening gate');
+        console.log('\n********* Opening Gate *********');
         setTimeout(function(){ 
         		 redled.writeSync(1);  // Turn redLED on.
         		 greenled.writeSync(0); // Turn greenLED off.
-               console.log('closing gate');
+               console.log('\n********* Closing Gate *********');
           }, 7000);  
       }
     }
