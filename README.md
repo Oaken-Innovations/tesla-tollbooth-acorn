@@ -31,7 +31,7 @@ ACORNS devices run Linux OS, and come bundled with all necessary applications in
 ## Software
 ACORNS utilize NodeJS, IPFS, Ethereum, and Solidity smart contract language are used in the software layer to collect and transfer data cheaply and with minimal infrastructure. An IPFS and Ethereum node are loaded onto the ACORN hardware module to faciliate the network and data storage layers. NodeJS provides a backend and frontend interface to operate and monitor the ACORN. Smart contracts written in Solidity are utilized for transparency.
 
-## tesla=tollbooth-acorn use case
+## tesla-tollbooth-acorn use case
 We have used NodeJS and Ethereum's Solidity smart contract programming language to created a decentralized tollway management solution that reduces costs and infrastructure, and increases transparency and seamless consumer integration.
 
 ## Project Links
